@@ -40,12 +40,12 @@ namespace SimpleRenamer.Classes {
                 };
 
                 //取得新檔名
-                newFilename = $"{exiftool.GetCreateDateString(file.FullName)}{file.Extension}";
+                newFilename = $"{exiftool.GetCreateDateString(file.FullName)}{file.Extension.ToLower()}";
 
                 //判斷檔名是否已重複，如果重複必須在後方加上序號
                 if (fileNameList.ContainsKey(newFilename)) {
                     fileNameList[newFilename] = fileNameList[newFilename] + 1;
-                    newFilename = $"{exiftool.GetCreateDateString(file.FullName)}_{(fileNameList[newFilename].ToString().PadLeft(2, '0'))}{file.Extension}";
+                    newFilename = $"{exiftool.GetCreateDateString(file.FullName)}_{(fileNameList[newFilename].ToString().PadLeft(2, '0'))}{file.Extension.ToLower()}";
                 }
                 else {
                     fileNameList.Add(newFilename, 0);

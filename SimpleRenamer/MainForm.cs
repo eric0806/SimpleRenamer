@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Configuration;
 
 namespace SimpleRenamer {
     public partial class MainForm : Form {
@@ -19,6 +20,7 @@ namespace SimpleRenamer {
 
         private void MainForm_Load(object sender, EventArgs e) {
             exiftool = new Classes.Exiftool();
+            folderBrowserDialog1.SelectedPath = ConfigurationManager.AppSettings["LastFolder"];
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -73,6 +75,16 @@ namespace SimpleRenamer {
             btnCancel.Enabled = false;
         }
 
+        /// <summary>
+        /// 資料夾變動立即儲存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtFolderName_TextChanged(object sender, EventArgs e) {
+            ConfigurationManager.AppSettings.Set("LastFolder", txtFolderName.Text);
+        }
+
+
         void ShowErrorMessage(string message) {
             MessageBox.Show(message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -86,9 +98,8 @@ namespace SimpleRenamer {
             var state = e.UserState as Classes.RenameState;
             toolStripProgressBar1.Value = e.ProgressPercentage;
             txtResult.Text += $"{state.OriginalName} 更名為 {state.NewName} => {(state.IsSuccess ? "成功" : "失敗")} {(state.IsSuccess ? "" : state.ErrorMessage)}{Environment.NewLine}";
-            txtResult.SelectionStart = txtResult.Text.Length;
-            txtResult.ScrollToCaret();
             lblRemaining.Text = state.Remaining.ToString();
+            ScrollTextToEnd();
         }
 
         private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -102,10 +113,15 @@ namespace SimpleRenamer {
                 toolStripProgressBar1.Value = 0;
                 txtResult.Text += "已完成";
             }
+            ScrollTextToEnd();
             lblRemaining.Text = "";
             btnStart.Enabled = true;
             btnCancel.Enabled = false;
         }
 
+        void ScrollTextToEnd() {
+            txtResult.SelectionStart = txtResult.Text.Length;
+            txtResult.ScrollToCaret();
+        }
     }
 }

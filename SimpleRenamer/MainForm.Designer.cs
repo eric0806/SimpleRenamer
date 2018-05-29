@@ -129,6 +129,7 @@
             this.txtFolderName.ReadOnly = true;
             this.txtFolderName.Size = new System.Drawing.Size(402, 23);
             this.txtFolderName.TabIndex = 99;
+            this.txtFolderName.TextChanged += new System.EventHandler(this.txtFolderName_TextChanged);
             // 
             // btnOpen
             // 
