@@ -46,7 +46,66 @@ namespace SimpleRenamer {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnStart_Click(object sender, EventArgs e) {
-
+            if (string.IsNullOrWhiteSpace(txtFolderName.Text)) {
+                ShowErrorMessage("請選擇資料夾!!");
+            }
+            else if (!Directory.Exists(txtFolderName.Text)) {
+                ShowErrorMessage("資料夾不存在!!");
+            }
+            else {
+                btnStart.Enabled = false;
+                btnCancel.Enabled = true;
+                txtResult.Text = "";
+                toolStripProgressBar1.Value = 0;
+                var dir = new DirectoryInfo(txtFolderName.Text);
+                lblRemaining.Text = dir.GetFiles().Length.ToString();
+                bgWorker.RunWorkerAsync(dir);
+            }
         }
+
+        /// <summary>
+        /// 取消目前正在跑的重命名處理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCancel_Click(object sender, EventArgs e) {
+            bgWorker.CancelAsync();
+            btnCancel.Enabled = false;
+        }
+
+        void ShowErrorMessage(string message) {
+            MessageBox.Show(message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void bgWorker_DoWork(object sender, DoWorkEventArgs e) {
+            var worker = new Classes.RenameWorker(ref exiftool);
+            worker.Rename(sender as BackgroundWorker, e);
+        }
+
+        private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            var state = e.UserState as Classes.RenameState;
+            toolStripProgressBar1.Value = e.ProgressPercentage;
+            txtResult.Text += $"{state.OriginalName} 更名為 {state.NewName} => {(state.IsSuccess ? "成功" : "失敗")} {(state.IsSuccess ? "" : state.ErrorMessage)}{Environment.NewLine}";
+            txtResult.SelectionStart = txtResult.Text.Length;
+            txtResult.ScrollToCaret();
+            lblRemaining.Text = state.Remaining.ToString();
+        }
+
+        private void bgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            if (e.Error != null) {
+                txtResult.Text += $"發生錯誤:{e.Error.Message}";
+            }
+            else if (e.Cancelled) {
+                txtResult.Text += "使用者已取消";
+            }
+            else {
+                toolStripProgressBar1.Value = 0;
+                txtResult.Text += "已完成";
+            }
+            lblRemaining.Text = "";
+            btnStart.Enabled = true;
+            btnCancel.Enabled = false;
+        }
+
     }
 }
