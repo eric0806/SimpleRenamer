@@ -9,13 +9,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Configuration;
+using Microsoft.WindowsAPICodePack;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace SimpleRenamer {
     public partial class MainForm : Form {
+        const int PROGRESS_BAR_MAX = 100;
+        TaskbarManager prog = TaskbarManager.Instance;
         Classes.Exiftool exiftool;
 
         public MainForm() {
             InitializeComponent();
+            toolStripProgressBar1.Maximum = PROGRESS_BAR_MAX;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -119,6 +124,9 @@ namespace SimpleRenamer {
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             var state = e.UserState as Classes.RenameState;
             toolStripProgressBar1.Value = e.ProgressPercentage;
+            prog.SetProgressState(TaskbarProgressBarState.Normal);
+            prog.SetProgressValue(e.ProgressPercentage, PROGRESS_BAR_MAX);
+
             txtResult.Text += $"{state.OriginalName} 更名為 {state.NewName} => {(state.IsSuccess ? "成功" : "失敗")} {(state.IsSuccess ? "" : state.ErrorMessage)}{Environment.NewLine}";
             lblRemaining.Text = state.Remaining.ToString();
             ScrollTextToEnd();
@@ -135,6 +143,7 @@ namespace SimpleRenamer {
                 toolStripProgressBar1.Value = 0;
                 txtResult.Text += "已完成";
             }
+            prog.SetProgressState(TaskbarProgressBarState.NoProgress);
             ScrollTextToEnd();
             lblRemaining.Text = "";
             btnStart.Enabled = true;
