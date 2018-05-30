@@ -59,15 +59,5 @@ namespace SimpleRenamer.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   查詢類型 System.Byte[] 的當地語系化資源。
-        /// </summary>
-        internal static byte[] exiftool {
-            get {
-                object obj = ResourceManager.GetObject("exiftool", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
