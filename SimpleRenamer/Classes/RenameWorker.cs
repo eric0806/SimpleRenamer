@@ -12,10 +12,10 @@ namespace SimpleRenamer.Classes {
     /// </summary>
     class RenameWorker {
         RenameState state;
-        readonly IExifOperator exiftool;
+        readonly IExifOperable exiftool;
         readonly Dictionary<string, int> fileNameList;
 
-        public RenameWorker(ref IExifOperator exiftool) {
+        public RenameWorker(ref IExifOperable exiftool) {
             this.exiftool = exiftool;
             fileNameList = new Dictionary<string, int>();
         }
@@ -33,6 +33,7 @@ namespace SimpleRenamer.Classes {
             var remaining = dir.GetFiles().Length;
             var total = remaining;
 
+            //更新進度
             void ReportProgress() {
                 remaining--;
                 state.Remaining = remaining;
@@ -84,11 +85,6 @@ namespace SimpleRenamer.Classes {
                 }
 
                 ReportProgress();
-                /*
-                remaining--;
-                state.Remaining = remaining;
-                worker.ReportProgress((int)((float)index / (float)total * 100), state);
-                */
             }
         }
 

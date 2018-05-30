@@ -13,7 +13,7 @@ namespace SimpleRenamer.Classes {
     /// <summary>
     /// 使用exiftool讀取媒體檔資訊的工具
     /// </summary>
-    class ExifOP_Exiftool : IExifOperator {
+    class ExifOP_Exiftool : IExifOperable {
         readonly List<string> allowTypes;
         const string FILE_NAME = "exiftool.exe";
         string exifFullName = Path.Combine(Environment.CurrentDirectory, FILE_NAME);
