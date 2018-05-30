@@ -59,5 +59,35 @@ namespace SimpleRenamer.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Help_32px {
+            get {
+                object obj = ResourceManager.GetObject("Help_32px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 (圖示) 的類型 System.Drawing.Icon 當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Icon ico_help_circle {
+            get {
+                object obj = ResourceManager.GetObject("ico_help_circle", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Puzzled_32px {
+            get {
+                object obj = ResourceManager.GetObject("Puzzled_32px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
