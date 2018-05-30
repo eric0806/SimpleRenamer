@@ -11,9 +11,10 @@ using System.Reflection;
 
 namespace SimpleRenamer.Classes {
     /// <summary>
-    /// 操作exiftool的工具
+    /// 使用exiftool讀取媒體檔資訊的工具
     /// </summary>
-    class Exiftool : IDisposable {
+    class ExifOP_Exiftool : IExifOperator {
+        readonly List<string> allowTypes;
         const string FILE_NAME = "exiftool.exe";
         string exifFullName = Path.Combine(Environment.CurrentDirectory, FILE_NAME);
 
@@ -28,8 +29,9 @@ namespace SimpleRenamer.Classes {
             }
         }
 
-        public Exiftool() {
+        public ExifOP_Exiftool() {
             exifObj = null;
+            allowTypes = new List<string> { "video", "image" };
             if (!ExiftoolIsExists) {
                 WriteExiftoolToFile();
             }
@@ -45,6 +47,18 @@ namespace SimpleRenamer.Classes {
             var exifList = new Dictionary<string, string>();
 
             ParseExif(fileFullName);
+
+            //檢查檔案格式
+            var type = GetExifValue("MIMEType");
+            if (string.IsNullOrEmpty(type)) { return null; }
+            type = type.ToLower();
+            var passType = false;
+            foreach(var allowType in allowTypes) {
+                if (type.ToLower().Contains(allowType)) {
+                    passType = true;
+                }
+            }
+            if (!passType) { return null; }
 
             /* *
              * 日期挑選順序：

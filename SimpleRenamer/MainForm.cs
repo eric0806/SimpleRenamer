@@ -8,15 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Configuration;
-using Microsoft.WindowsAPICodePack;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace SimpleRenamer {
     public partial class MainForm : Form {
         const int PROGRESS_BAR_MAX = 100;
         TaskbarManager prog = TaskbarManager.Instance;
-        Classes.Exiftool exiftool;
+        Classes.IExifOperator exiftool;
 
         public MainForm() {
             InitializeComponent();
@@ -24,7 +22,7 @@ namespace SimpleRenamer {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            exiftool = new Classes.Exiftool();
+            exiftool = new Classes.ExifOP_ApiCodePack();
             folderBrowserDialog1.SelectedPath = Properties.Settings.Default.LastFolder;
             txtFolderName.Text = folderBrowserDialog1.SelectedPath;
         }
