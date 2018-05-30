@@ -14,7 +14,7 @@ namespace SimpleRenamer {
     public partial class MainForm : Form {
         const int PROGRESS_BAR_MAX = 100;
         TaskbarManager prog = TaskbarManager.Instance;
-        Classes.IExifOperator exiftool;
+        Classes.IExifOperable exiftool;
 
         public MainForm() {
             InitializeComponent();

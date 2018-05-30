@@ -10,7 +10,7 @@ namespace SimpleRenamer.Classes {
     /// <summary>
     /// 使用Windows API Code Pack讀取媒體檔資訊的工具
     /// </summary>
-    class ExifOP_ApiCodePack : IExifOperator {
+    class ExifOP_ApiCodePack : IExifOperable {
         ShellObject shellFile;
         readonly List<string> allowTypes;
 
@@ -63,6 +63,7 @@ namespace SimpleRenamer.Classes {
                     }
             }
 
+            //找不到日期，則查找共通的部分
             if (!string.IsNullOrEmpty(str)) { return str; }
             if (HasKey("System.Document.DateSaved")) {
                 str = GetDateStrFromDate((GetExifValue("System.Document.DateSaved") as DateTime?).Value);

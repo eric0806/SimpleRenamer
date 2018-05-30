@@ -5,7 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleRenamer.Classes {
-    interface IExifOperator : IDisposable {
+    /// <summary>
+    /// 可操作Exif的介面
+    /// </summary>
+    interface IExifOperable : IDisposable {
         string GetCreateDateString(string fileFullName);
     }
 }

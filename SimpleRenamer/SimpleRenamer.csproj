@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Classes\ExifOP_ApiCodePack.cs" />
     <Compile Include="Classes\ExifOP_Exiftool.cs" />
-    <Compile Include="Classes\IExifOperator.cs" />
+    <Compile Include="Classes\IExifOperable.cs" />
     <Compile Include="Classes\RenameWorker.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
