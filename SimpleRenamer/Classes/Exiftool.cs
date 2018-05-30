@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace SimpleRenamer.Classes {
     /// <summary>
@@ -13,6 +16,8 @@ namespace SimpleRenamer.Classes {
     class Exiftool : IDisposable {
         const string FILE_NAME = "exiftool.exe";
         string exifFullName = Path.Combine(Environment.CurrentDirectory, FILE_NAME);
+
+        JArray exifObj;
 
         /// <summary>
         /// 指出暫存的exiftool.exe是否存在
@@ -24,6 +29,7 @@ namespace SimpleRenamer.Classes {
         }
 
         public Exiftool() {
+            exifObj = null;
             if (!ExiftoolIsExists) {
                 WriteExiftoolToFile();
             }
@@ -36,32 +42,31 @@ namespace SimpleRenamer.Classes {
         /// <returns></returns>
         public string GetCreateDateString(string fileFullName) {
             var str = "";
-            var tempStr = "";
-            using (var p = new Process()) {
-                p.StartInfo.FileName = exifFullName;
-                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.Arguments = $"\"{fileFullName}\"";
-                p.StartInfo.RedirectStandardOutput = true;
-                p.Start();
-                using (var output = p.StandardOutput) {
-                    while(!output.EndOfStream) {
-                        var line = output.ReadLine();
-                        if (line.IndexOf("File Modification Date", 0, StringComparison.CurrentCulture) >= 0) {
-                            tempStr = GetDateStr(line);
-                        }
-                        if (line.IndexOf("Create Date", 0, StringComparison.CurrentCulture) >= 0) {
-                            str = GetDateStr(line);
-                            break;
-                        }
-                    }
-                    if (str == string.Empty) {
-                        str = tempStr;
-                    }
-                }
-                p.Close();
+            var exifList = new Dictionary<string, string>();
+
+            ParseExif(fileFullName);
+
+            /* *
+             * 日期挑選順序：
+             * 1. DateTimeOriginal
+             * 2. CreateDate
+             * 3. ModifyDate
+             * 4. FileModifyDate
+             * */
+            if (!string.IsNullOrEmpty(GetExifValue("DateTimeOriginal"))) {
+                str = GetExifDateStr(GetExifValue("DateTimeOriginal"));
             }
+            else if (!string.IsNullOrEmpty(GetExifValue("CreateDate"))) {
+                str = GetExifDateStr(GetExifValue("CreateDate"));
+            }
+            else if (!string.IsNullOrEmpty(GetExifValue("ModifyDate"))) {
+                str = GetExifDateStr(GetExifValue("ModifyDate"));
+            }
+            else if (!string.IsNullOrEmpty(GetExifValue("FileModifyDate"))) {
+                str = GetExifDateStr(GetExifValue("FileModifyDate"));
+            }
+
+            //都找不到，則從檔案系統內的修改日期決定
             if (str == string.Empty) {
                 str = GetFilesystemDateStr(fileFullName);
             }
@@ -70,13 +75,55 @@ namespace SimpleRenamer.Classes {
 
         #region 私有函數
         /// <summary>
+        /// 載入exiftool並解析檔案內容
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        void ParseExif(string fileFullName) {
+            using (var p = new Process()) {
+                p.StartInfo.FileName = exifFullName;
+                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.Arguments = $"-j -charset UTF8 -d \"%Y-%m-%d %H:%M:%S\" \"{fileFullName}\""; //採用Json輸出
+                p.StartInfo.RedirectStandardOutput = true;
+                p.Start();
+
+                using (var output = p.StandardOutput) {
+                    var data = output.ReadToEnd();
+                    exifObj = JsonConvert.DeserializeObject<JArray>(data);
+                }
+
+                p.Close();
+            }
+        }
+
+        /// <summary>
+        /// 取得Exif指定key的值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        string GetExifValue(string key) {
+            if (exifObj != null && exifObj[0].HasValues) {
+                try {
+                    return exifObj[0][key].ToString();
+                }
+                catch {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 將Exiftool內的日期資訊回傳成日期字串
         /// </summary>
-        /// <param name="line"></param>
+        /// <param name="dateStr"></param>
         /// <returns></returns>
-        string GetDateStr(string line) {
-            var fullDateAry = line.Substring(line.IndexOf(":") + 1, line.Length - (line.IndexOf(":") + 1)).Trim().Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            return $"{fullDateAry[0].Replace(":", "-")}_{fullDateAry[1].Replace(":", "")}";
+        string GetExifDateStr(string dateStr) {
+            if (DateTime.TryParse(dateStr, out DateTime date)) {
+                return GetDateStrFromDate(date);
+            }
+            return dateStr;
         }
 
         /// <summary>
@@ -86,13 +133,22 @@ namespace SimpleRenamer.Classes {
         /// <returns></returns>
         string GetFilesystemDateStr(string fileFullName) {
             var file = new FileInfo(fileFullName);
+            return GetDateStrFromDate(file.CreationTime);
+        }
+
+        /// <summary>
+        /// 從日期轉成日期字串
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        string GetDateStrFromDate(DateTime date) {
             return string.Format("{0}-{1}-{2}_{3}{4}{5}",
-                file.CreationTime.Year,
-                file.CreationTime.Month.ToString().PadLeft(2, '0'),
-                file.CreationTime.Day.ToString().PadLeft(2, '0'),
-                file.CreationTime.Hour.ToString().PadLeft(2, '0'),
-                file.CreationTime.Minute.ToString().PadLeft(2, '0'),
-                file.CreationTime.Second.ToString().PadLeft(2, '0')
+                    date.Year,
+                    date.Month.ToString().PadLeft(2, '0'),
+                    date.Day.ToString().PadLeft(2, '0'),
+                    date.Hour.ToString().PadLeft(2, '0'),
+                    date.Minute.ToString().PadLeft(2, '0'),
+                    date.Second.ToString().PadLeft(2, '0')
                 );
         }
 
@@ -105,7 +161,7 @@ namespace SimpleRenamer.Classes {
                 DeleteExiftoolFile();
             }
             var exiftool = Properties.Resources.exiftool;
-            using(var file = new FileStream(exifFullName, FileMode.CreateNew, FileAccess.ReadWrite)) {
+            using (var file = new FileStream(exifFullName, FileMode.CreateNew, FileAccess.ReadWrite)) {
                 file.Write(exiftool, 0, exiftool.Length);
                 file.Flush();
             }

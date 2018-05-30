@@ -20,11 +20,13 @@ namespace SimpleRenamer {
 
         private void MainForm_Load(object sender, EventArgs e) {
             exiftool = new Classes.Exiftool();
-            folderBrowserDialog1.SelectedPath = ConfigurationManager.AppSettings["LastFolder"];
+            folderBrowserDialog1.SelectedPath = Properties.Settings.Default.LastFolder;
+            txtFolderName.Text = folderBrowserDialog1.SelectedPath;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             exiftool.Dispose();
+            SaveLastFolder();
         }
 
         /// <summary>
@@ -81,14 +83,34 @@ namespace SimpleRenamer {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void txtFolderName_TextChanged(object sender, EventArgs e) {
-            ConfigurationManager.AppSettings.Set("LastFolder", txtFolderName.Text);
+            SaveLastFolder();
         }
 
+        /// <summary>
+        /// 儲存最後開啟資料夾到應用程式設定內
+        /// </summary>
+        void SaveLastFolder() {
+            Properties.Settings.Default.LastFolder = txtFolderName.Text;
+            Properties.Settings.Default.Save();
+        }
 
+        /// <summary>
+        /// 顯示錯誤訊息
+        /// </summary>
+        /// <param name="message"></param>
         void ShowErrorMessage(string message) {
             MessageBox.Show(message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// 捲動文字方塊到最底端
+        /// </summary>
+        void ScrollTextToEnd() {
+            txtResult.SelectionStart = txtResult.Text.Length;
+            txtResult.ScrollToCaret();
+        }
+
+        #region BGWorker工作區
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e) {
             var worker = new Classes.RenameWorker(ref exiftool);
             worker.Rename(sender as BackgroundWorker, e);
@@ -118,10 +140,6 @@ namespace SimpleRenamer {
             btnStart.Enabled = true;
             btnCancel.Enabled = false;
         }
-
-        void ScrollTextToEnd() {
-            txtResult.SelectionStart = txtResult.Text.Length;
-            txtResult.ScrollToCaret();
-        }
+        #endregion
     }
 }

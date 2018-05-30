@@ -7,10 +7,14 @@ using System.ComponentModel;
 using System.IO;
 
 namespace SimpleRenamer.Classes {
+    /// <summary>
+    /// 重新命名的處理
+    /// </summary>
     class RenameWorker {
         RenameState state;
         readonly Exiftool exiftool;
         readonly Dictionary<string, int> fileNameList;
+
         public RenameWorker(ref Exiftool exiftool) {
             this.exiftool = exiftool;
             fileNameList = new Dictionary<string, int>();
@@ -51,8 +55,10 @@ namespace SimpleRenamer.Classes {
                     fileNameList.Add(newFilename, 0);
                 }
 
+                //設定新檔名
                 state.NewName = newFilename;
 
+                //檔案更名
                 try {
                     file.MoveTo(Path.Combine(Path.GetDirectoryName(file.FullName), newFilename));
                     state.IsSuccess = true;
@@ -73,7 +79,7 @@ namespace SimpleRenamer.Classes {
 
 
     /// <summary>
-    /// 重新命名的狀態
+    /// 重新命名的處理狀態
     /// </summary>
     class RenameState {
         public string OriginalName { get; set; }
