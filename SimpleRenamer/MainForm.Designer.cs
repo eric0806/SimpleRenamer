@@ -23,6 +23,7 @@
         /// 這個方法的內容。
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -31,7 +32,7 @@
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnOpen = new System.Windows.Forms.Button();
@@ -40,6 +41,7 @@
             this.txtResult = new System.Windows.Forms.TextBox();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.bgWorker = new System.ComponentModel.BackgroundWorker();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -107,7 +109,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.btnHelp);
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Controls.Add(this.btnStart);
             this.groupBox1.Controls.Add(this.btnOpen);
@@ -120,23 +122,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "指定資料夾";
             // 
-            // button1
+            // btnHelp
             // 
-            this.button1.Image = global::SimpleRenamer.Properties.Resources.Puzzled_32px;
-            this.button1.Location = new System.Drawing.Point(575, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(53, 36);
-            this.button1.TabIndex = 101;
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnHelp.Image = global::SimpleRenamer.Properties.Resources.Puzzled_48px;
+            this.btnHelp.Location = new System.Drawing.Point(575, 19);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(53, 53);
+            this.btnHelp.TabIndex = 101;
+            this.toolTip1.SetToolTip(this.btnHelp, "幫幫我!");
+            this.btnHelp.UseVisualStyleBackColor = true;
             // 
             // btnCancel
             // 
             this.btnCancel.Enabled = false;
             this.btnCancel.Font = new System.Drawing.Font("Microsoft JhengHei UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.btnCancel.ForeColor = System.Drawing.Color.Maroon;
-            this.btnCancel.Location = new System.Drawing.Point(494, 27);
+            this.btnCancel.Location = new System.Drawing.Point(494, 19);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 36);
+            this.btnCancel.Size = new System.Drawing.Size(75, 53);
             this.btnCancel.TabIndex = 100;
             this.btnCancel.Text = "取消";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -145,9 +148,9 @@
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft JhengHei UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btnStart.Location = new System.Drawing.Point(413, 27);
+            this.btnStart.Location = new System.Drawing.Point(413, 19);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(75, 36);
+            this.btnStart.Size = new System.Drawing.Size(75, 53);
             this.btnStart.TabIndex = 1;
             this.btnStart.Text = "開始";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -210,6 +213,13 @@
             this.bgWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgWorker_ProgressChanged);
             this.bgWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgWorker_RunWorkerCompleted);
             // 
+            // toolTip1
+            // 
+            this.toolTip1.AutomaticDelay = 300;
+            this.toolTip1.AutoPopDelay = 5000;
+            this.toolTip1.InitialDelay = 300;
+            this.toolTip1.ReshowDelay = 60;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -258,7 +268,8 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel lblRemaining;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnHelp;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

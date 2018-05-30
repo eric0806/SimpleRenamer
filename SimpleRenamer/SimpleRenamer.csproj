@@ -106,6 +106,7 @@
     <Content Include="Resources\Help_32px.png" />
     <Content Include="Resources\ico_help_circle.ico" />
     <Content Include="Resources\Puzzled_32px.png" />
+    <Content Include="Resources\Puzzled_48px.png" />
     <Content Include="Resources\rename.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
