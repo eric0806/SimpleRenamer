@@ -7,11 +7,15 @@ using System.ComponentModel;
 using System.IO;
 
 namespace SimpleRenamer.Classes {
+    /// <summary>
+    /// 重新命名的處理
+    /// </summary>
     class RenameWorker {
         RenameState state;
-        readonly Exiftool exiftool;
+        readonly IExifOperator exiftool;
         readonly Dictionary<string, int> fileNameList;
-        public RenameWorker(ref Exiftool exiftool) {
+
+        public RenameWorker(ref IExifOperator exiftool) {
             this.exiftool = exiftool;
             fileNameList = new Dictionary<string, int>();
         }
@@ -28,6 +32,13 @@ namespace SimpleRenamer.Classes {
             var index = 0;
             var remaining = dir.GetFiles().Length;
             var total = remaining;
+
+            void ReportProgress() {
+                remaining--;
+                state.Remaining = remaining;
+                worker.ReportProgress((int)((float)index / (float)total * 100), state);
+            }
+
             foreach(var file in dir.GetFiles()) {
                 if (worker.CancellationPending) {
                     e.Cancel = true;
@@ -40,6 +51,14 @@ namespace SimpleRenamer.Classes {
                 };
 
                 //取得新檔名
+                newFilename = exiftool.GetCreateDateString(file.FullName);
+                //如果檔名空白，表示不支援(只支援影片和圖片)，跳過處理
+                if (string.IsNullOrEmpty(newFilename)) {
+                    state.IsSuccess = false;
+                    state.ErrorMessage = "不支援的檔案類型";
+                    ReportProgress();
+                    continue;
+                }
                 newFilename = $"{exiftool.GetCreateDateString(file.FullName)}{file.Extension.ToLower()}";
 
                 //判斷檔名是否已重複，如果重複必須在後方加上序號
@@ -51,8 +70,10 @@ namespace SimpleRenamer.Classes {
                     fileNameList.Add(newFilename, 0);
                 }
 
+                //設定新檔名
                 state.NewName = newFilename;
 
+                //檔案更名
                 try {
                     file.MoveTo(Path.Combine(Path.GetDirectoryName(file.FullName), newFilename));
                     state.IsSuccess = true;
@@ -62,9 +83,12 @@ namespace SimpleRenamer.Classes {
                     state.ErrorMessage = ex.Message;
                 }
 
+                ReportProgress();
+                /*
                 remaining--;
                 state.Remaining = remaining;
                 worker.ReportProgress((int)((float)index / (float)total * 100), state);
+                */
             }
         }
 
@@ -73,7 +97,7 @@ namespace SimpleRenamer.Classes {
 
 
     /// <summary>
-    /// 重新命名的狀態
+    /// 重新命名的處理狀態
     /// </summary>
     class RenameState {
         public string OriginalName { get; set; }

@@ -8,23 +8,28 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Configuration;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace SimpleRenamer {
     public partial class MainForm : Form {
-        Classes.Exiftool exiftool;
+        const int PROGRESS_BAR_MAX = 100;
+        TaskbarManager prog = TaskbarManager.Instance;
+        Classes.IExifOperator exiftool;
 
         public MainForm() {
             InitializeComponent();
+            toolStripProgressBar1.Maximum = PROGRESS_BAR_MAX;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            exiftool = new Classes.Exiftool();
-            folderBrowserDialog1.SelectedPath = ConfigurationManager.AppSettings["LastFolder"];
+            exiftool = new Classes.ExifOP_ApiCodePack();
+            folderBrowserDialog1.SelectedPath = Properties.Settings.Default.LastFolder;
+            txtFolderName.Text = folderBrowserDialog1.SelectedPath;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
             exiftool.Dispose();
+            SaveLastFolder();
         }
 
         /// <summary>
@@ -81,14 +86,34 @@ namespace SimpleRenamer {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void txtFolderName_TextChanged(object sender, EventArgs e) {
-            ConfigurationManager.AppSettings.Set("LastFolder", txtFolderName.Text);
+            SaveLastFolder();
         }
 
+        /// <summary>
+        /// 儲存最後開啟資料夾到應用程式設定內
+        /// </summary>
+        void SaveLastFolder() {
+            Properties.Settings.Default.LastFolder = txtFolderName.Text;
+            Properties.Settings.Default.Save();
+        }
 
+        /// <summary>
+        /// 顯示錯誤訊息
+        /// </summary>
+        /// <param name="message"></param>
         void ShowErrorMessage(string message) {
             MessageBox.Show(message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// 捲動文字方塊到最底端
+        /// </summary>
+        void ScrollTextToEnd() {
+            txtResult.SelectionStart = txtResult.Text.Length;
+            txtResult.ScrollToCaret();
+        }
+
+        #region BGWorker工作區
         private void bgWorker_DoWork(object sender, DoWorkEventArgs e) {
             var worker = new Classes.RenameWorker(ref exiftool);
             worker.Rename(sender as BackgroundWorker, e);
@@ -97,6 +122,9 @@ namespace SimpleRenamer {
         private void bgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             var state = e.UserState as Classes.RenameState;
             toolStripProgressBar1.Value = e.ProgressPercentage;
+            prog.SetProgressState(TaskbarProgressBarState.Normal);
+            prog.SetProgressValue(e.ProgressPercentage, PROGRESS_BAR_MAX);
+
             txtResult.Text += $"{state.OriginalName} 更名為 {state.NewName} => {(state.IsSuccess ? "成功" : "失敗")} {(state.IsSuccess ? "" : state.ErrorMessage)}{Environment.NewLine}";
             lblRemaining.Text = state.Remaining.ToString();
             ScrollTextToEnd();
@@ -113,15 +141,12 @@ namespace SimpleRenamer {
                 toolStripProgressBar1.Value = 0;
                 txtResult.Text += "已完成";
             }
+            prog.SetProgressState(TaskbarProgressBarState.NoProgress);
             ScrollTextToEnd();
             lblRemaining.Text = "";
             btnStart.Enabled = true;
             btnCancel.Enabled = false;
         }
-
-        void ScrollTextToEnd() {
-            txtResult.SelectionStart = txtResult.Text.Length;
-            txtResult.ScrollToCaret();
-        }
+        #endregion
     }
 }
