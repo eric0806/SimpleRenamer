@@ -83,9 +83,19 @@ namespace SimpleRenamer.Properties {
         /// <summary>
         ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
-        internal static System.Drawing.Bitmap Puzzled_32px {
+        internal static System.Drawing.Bitmap No_Running_48px {
             get {
-                object obj = ResourceManager.GetObject("Puzzled_32px", resourceCulture);
+                object obj = ResourceManager.GetObject("No_Running_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Open_48px {
+            get {
+                object obj = ResourceManager.GetObject("Open_48px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -96,6 +106,16 @@ namespace SimpleRenamer.Properties {
         internal static System.Drawing.Bitmap Puzzled_48px {
             get {
                 object obj = ResourceManager.GetObject("Puzzled_48px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Running_48px {
+            get {
+                object obj = ResourceManager.GetObject("Running_48px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

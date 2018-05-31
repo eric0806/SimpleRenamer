@@ -60,7 +60,7 @@
             this.toolStripProgressBar1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 343);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(646, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(619, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
@@ -79,7 +79,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(362, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(335, 17);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // toolStripProgressBar1
@@ -103,7 +103,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(646, 343);
+            this.splitContainer1.Size = new System.Drawing.Size(619, 343);
             this.splitContainer1.SplitterDistance = 81;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -117,7 +117,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(646, 81);
+            this.groupBox1.Size = new System.Drawing.Size(619, 81);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "指定資料夾";
@@ -125,7 +125,7 @@
             // btnHelp
             // 
             this.btnHelp.Image = global::SimpleRenamer.Properties.Resources.Puzzled_48px;
-            this.btnHelp.Location = new System.Drawing.Point(575, 19);
+            this.btnHelp.Location = new System.Drawing.Point(548, 19);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(53, 53);
             this.btnHelp.TabIndex = 101;
@@ -137,32 +137,35 @@
             this.btnCancel.Enabled = false;
             this.btnCancel.Font = new System.Drawing.Font("Microsoft JhengHei UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.btnCancel.ForeColor = System.Drawing.Color.Maroon;
-            this.btnCancel.Location = new System.Drawing.Point(494, 19);
+            this.btnCancel.Image = global::SimpleRenamer.Properties.Resources.No_Running_48px;
+            this.btnCancel.Location = new System.Drawing.Point(472, 19);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 53);
+            this.btnCancel.Size = new System.Drawing.Size(53, 53);
             this.btnCancel.TabIndex = 100;
-            this.btnCancel.Text = "取消";
+            this.toolTip1.SetToolTip(this.btnCancel, "取消");
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft JhengHei UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.btnStart.Image = global::SimpleRenamer.Properties.Resources.Running_48px;
             this.btnStart.Location = new System.Drawing.Point(413, 19);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(75, 53);
+            this.btnStart.Size = new System.Drawing.Size(53, 53);
             this.btnStart.TabIndex = 1;
-            this.btnStart.Text = "開始";
+            this.toolTip1.SetToolTip(this.btnStart, "開始執行");
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(332, 35);
+            this.btnOpen.Image = global::SimpleRenamer.Properties.Resources.Open_48px;
+            this.btnOpen.Location = new System.Drawing.Point(354, 19);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(75, 23);
+            this.btnOpen.Size = new System.Drawing.Size(53, 53);
             this.btnOpen.TabIndex = 0;
-            this.btnOpen.Text = "開啟";
+            this.toolTip1.SetToolTip(this.btnOpen, "選擇資料夾");
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
@@ -171,7 +174,7 @@
             this.txtFolderName.Location = new System.Drawing.Point(12, 35);
             this.txtFolderName.Name = "txtFolderName";
             this.txtFolderName.ReadOnly = true;
-            this.txtFolderName.Size = new System.Drawing.Size(314, 23);
+            this.txtFolderName.Size = new System.Drawing.Size(336, 23);
             this.txtFolderName.TabIndex = 99;
             this.txtFolderName.TextChanged += new System.EventHandler(this.txtFolderName_TextChanged);
             // 
@@ -181,7 +184,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(646, 258);
+            this.groupBox2.Size = new System.Drawing.Size(619, 258);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "結果輸出";
@@ -196,7 +199,7 @@
             this.txtResult.Name = "txtResult";
             this.txtResult.ReadOnly = true;
             this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtResult.Size = new System.Drawing.Size(640, 236);
+            this.txtResult.Size = new System.Drawing.Size(613, 236);
             this.txtResult.TabIndex = 0;
             // 
             // folderBrowserDialog1
@@ -224,7 +227,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(646, 365);
+            this.ClientSize = new System.Drawing.Size(619, 365);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
